@@ -21,7 +21,6 @@ def eadMatrixFromText(filename):
         matrix[index] = list[0:len(list)-1]
         labels.append (int(list[-1]))
         index = index + 1
-        #print (line)
     return matrix,labels
 #测试分类器
 def dataClassTest():
