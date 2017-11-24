@@ -27,6 +27,6 @@ def handwritingRecognition():
     #获取测试数据
     testFileName = 'testDigits/test.txt'
     testVector = img2vector(testFileName)
-    result = classify0(testVector,trainMatrix,hwLabels,3)
+    result = Classify0(testVector,trainMatrix,hwLabels,3)
     print (result)
 handwritingRecognition()

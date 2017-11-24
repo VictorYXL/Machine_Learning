@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import re
 import numpy
 from math import *
@@ -27,7 +26,7 @@ def SentenceToVector(keywords, sentence):
         if word in keywords:
             vector[list(keywords).index(word)] = 1
         else:
-            print "Word %s not in keyword list" % word
+            print ("Word %s not in keyword list" % word)
             return None
     return vector
 #P(Ci|W) = P(W|Ci)*P(Ci)/P(W) -> P(W1|Ci)*P(W2|Ci)*...*P(Wn|Ci)*P(Ci)/(P(W1)*P(W2)*...*P(Wn)) 
@@ -54,13 +53,6 @@ def TrainNBModel(dataset):
         pWjWhenCi[label] = pWjWhenCi[label] + sentence
     for label in set(trainLabel):
         pWjWhenCi[label] = pWjWhenCi[label] / ciCount[label]
-    # for index in range(len(allKeyWords)): 
-    #     tmpSum = 0 
-    #     for label in set(trainLabel):
-    #         tmpSum = tmpSum + pWjWhenCi[label][index]
-    #     for label in set(trainLabel):
-    #         pWjWhenCi[label][index] = pWjWhenCi[label][index] / float(tmpSum)
-    #     #pWjWhenCi[label] = [item / float(sum(pWjWhenCi[label])) for item in pWjWhenCi[label]]
         
     #P(Wj)
     pWj = sum(trainMatrix)
@@ -72,7 +64,6 @@ def TrainNBModel(dataset):
 def ClassifyByNaiveBayes(model, sentence):
     words = re.split('\W+',sentence.lower())[:-1]
     
-    print sentence.lower()
     sentenceVector = SentenceToVector(model['AllKeywords'], words)
 
     #P(Ci|w)
@@ -91,8 +82,8 @@ def ClassifyByNaiveBayes(model, sentence):
 dataset = LoadDataset("Dataset.txt")
 model = TrainNBModel(dataset)
 #print model
-print ClassifyByNaiveBayes(model, "I love you")
-print ClassifyByNaiveBayes(model, "I want to help you")
-print ClassifyByNaiveBayes(model, "I want to fuck you")
-print ClassifyByNaiveBayes(model, "Fuck this stupid dog")
-print ClassifyByNaiveBayes(model, "Love to fuck you")
+print (ClassifyByNaiveBayes(model, "I love you"))
+print (ClassifyByNaiveBayes(model, "I want to help you"))
+print (ClassifyByNaiveBayes(model, "I want to fuck you"))
+print (ClassifyByNaiveBayes(model, "Fuck this stupid dog"))
+print (ClassifyByNaiveBayes(model, "Love to fuck you"))
