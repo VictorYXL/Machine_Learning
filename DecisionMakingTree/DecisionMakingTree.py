@@ -53,7 +53,7 @@ def ChooseBestFeatureToSplit(dataset):
             minShannonEnt = shannonEnt
             minFeature = i
     return minFeature
-    #print (featureCount)
+    #print(featureCount)
 
 #当相同feature对应不同label时，少数服从多数
 def MajorityCnt(labelList):

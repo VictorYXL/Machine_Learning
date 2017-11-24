@@ -51,14 +51,11 @@ def ScotGradAscent(dataset, learningRatio, times):
 def DrawSplitLineFor2D(dataset, weightList, colorList):
     labelCount = len(set(dataset['label']))
     point = [[[], []] for i in range(labelCount)]
-    #print numpy.shape(point)
     for index in range(len(dataset['label'])):
         label = int(dataset['label'][index])
         data = dataset['data'][index]
         point[label][0].append(data[0])
         point[label][1].append(data[1])
-        #print point
-        #print '-------------------------------------'
     
     figure = plt.figure()
     ax = figure.add_subplot(111)
@@ -76,9 +73,16 @@ def DrawSplitLineFor2D(dataset, weightList, colorList):
 
     plt.show()
 
+def ClassifyByLogistic(inX, weights):
+    y = sigmod(sum(inX * weights[1:] + weights[0]))
+    if (y > 0.5):
+        return 1
+    else:
+        return 0
 
 
 dataset = LoadDataset("Dataset.txt")
 weights1 = GradAscent(dataset,0.01, 3)
 weights2 = ScotGradAscent(dataset,0.01, 300)
+print(ClassifyByLogistic(numpy.array([1, 10]), weights1))
 DrawSplitLineFor2D(dataset, [weights1, weights2], ['yellow', 'blue'])

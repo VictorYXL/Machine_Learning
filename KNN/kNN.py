@@ -41,4 +41,4 @@ def Classify0(inX,dataSet,labels,k):
 #测试：默认训练集四个数据，两个属性
 #group = array([[1.0,1.1],[1.0,1.0],[0,0],[0,0.1]])
 #labels = ['A','A','B','B']
-#print (classify0([0,0],group,labels,2))
+#print(classify0([0,0],group,labels,2))

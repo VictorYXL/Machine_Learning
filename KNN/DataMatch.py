@@ -33,13 +33,13 @@ def dataClassTest():
     errorCount = 0.0
     for i in range(numToTest):
         classifierResult = Classify0(normalMat[i,:],normalMat[numToTest:m,:],dataLabels[numToTest:m],3)
-        print ("class result %d,real answer %d"%(classifierResult,dataLabels[i]))
+        print("class result %d,real answer %d"%(classifierResult,dataLabels[i]))
         if (classifierResult != dataLabels[i]):
             errorCount += 1
-    print ("The error rate:%f"%(errorCount/float(numToTest)))
+    print("The error rate:%f"%(errorCount/float(numToTest)))
 #(matrix,labels) = readMatrixFromText("datingTestSet2.txt")
 #normMat,ranges,min = autoNorm(matrix)
-#print (normMat)
+#print(normMat)
 
 def classifyPerson():
         resultList = ['not in all','in small doses','in large doses']
@@ -50,7 +50,7 @@ def classifyPerson():
         normMatrix,ranges,minValues = AutoNorm(dataMatrix)
         inArray = ([ffMiles,percentTats,iceCream])
         classifierResult = Classify0 ((inArray)/ranges,normMatrix,dataLabels,3)
-        print ("You will probably like this person:",resultList[classifierResult-1])
+        print("You will probably like this person:",resultList[classifierResult-1])
 classifyPerson()
 #绘图
 #fig = plt.figure()
