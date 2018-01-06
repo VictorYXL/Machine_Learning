@@ -26,10 +26,10 @@ def smoSimple(dataset, border, toler, maxIter):
     iter = 0
 
     while iter < maxIter:
-        whetherChanged = False
         for i in range(dataCount):
             Ui = float(numpy.multiply(alphas, labelMatrix).T * (dataMatrix * dataMatrix[i,:].T)) + b
             Ei = Ui - float(labelMatrix[i])
+
             j = int(random.uniform(0,dataCount))
             while (i == j):
                 j = int(random.uniform(0,dataCount))
@@ -46,7 +46,13 @@ def smoSimple(dataset, border, toler, maxIter):
                     eta = 2.0 * dataMatrix[i,:] * dataMatrix[j,:].T - dataMatrix[i,:] * dataMatrix[i,:].T - dataMatrix[j,:] * dataMatrix[j,:].T
                     if (eta < 0):
                         newAlphaJ = alphas[j] - labelMatrix[j] * (Ei - Ej) / eta
-                        newAlphaI = alphas[i] + labelMatrix[i] * labelMatrix[j] * (newAlphaJ - alphas[j])
+                        if (newAlphaJ > H):
+                            newAlphaJ = H
+                        if (newAlphaJ < L):
+                            newAlphaJ = L
+                        
+                        
+                        newAlphaI = alphas[i] - labelMatrix[i] * labelMatrix[j] * (newAlphaJ - alphas[j])
                         b1 = b - Ei - labelMatrix[i] * (newAlphaI - alphas[i]) * dataMatrix[i,:] * dataMatrix[i,:].T - labelMatrix[j] * (newAlphaJ - alphas[j]) * dataMatrix[i,:] * dataMatrix[j,:].T
                         b2 = b - Ej - labelMatrix[i] * (newAlphaI - alphas[i]) * dataMatrix[i,:] * dataMatrix[j,:].T - labelMatrix[j] * (newAlphaJ - alphas[j]) * dataMatrix[j,:] * dataMatrix[j,:].T
                         alphas[i] = newAlphaI
@@ -57,15 +63,10 @@ def smoSimple(dataset, border, toler, maxIter):
                             b = b2
                         else:
                             b = (b1 + b2) / 2.0
-                        whetherChanged = True
-                #print (i)
-                #print (dataCount)
-        if (whetherChanged == False) :
-            iter = iter + 1
-            print (iter)
-    print (b)
-    print (alphas)
+        iter = iter + 1
     return alphas,b
     
 dataset = LoadDataset("Dataset.txt")
-smoSimple(dataset, 0.6, 0.0001, 100)
+alphas,b = smoSimple(dataset, 0.6, 0.001, 100)
+print (alphas)
+print (b)
