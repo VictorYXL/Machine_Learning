@@ -2,6 +2,7 @@
 import random
 import numpy
 import matplotlib
+import LoadData
 
 def smoSimple(dataset, border, toler, maxIter):
     dataMatrix = numpy.mat(dataset['data'])
@@ -38,6 +39,8 @@ def smoSimple(dataset, border, toler, maxIter):
                             newAlphaJ = H
                         if (newAlphaJ < L):
                             newAlphaJ = L
+                        if (abs(newAlphaJ - alphas[j]) < 0.001):
+                           continue
                         
                         
                         newAlphaI = alphas[i] - labelMatrix[i] * labelMatrix[j] * (newAlphaJ - alphas[j])
@@ -54,7 +57,7 @@ def smoSimple(dataset, border, toler, maxIter):
         iter = iter + 1
     return alphas,b
 
-import LoadData
+
 dataset = LoadData.LoadDataset("Dataset.txt")
 alphas,b = smoSimple(dataset, 0.6, 0.001, 100)
 print (alphas)
