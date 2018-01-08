@@ -2,18 +2,6 @@
 import random
 import numpy
 import matplotlib
-def LoadDataset(fileName):
-    f = open(fileName, "r")
-    dataList = []
-    labelList = []
-    for line in f.readlines():
-        lineArray = line.strip().split()
-        numLine = []
-        for num in lineArray[:-1]:
-            numLine.append(float(num))
-        dataList.append(numLine)
-        labelList.append(float(lineArray[-1]))
-    return {'data': dataList, 'label': labelList}
 
 def smoSimple(dataset, border, toler, maxIter):
     dataMatrix = numpy.mat(dataset['data'])
@@ -65,8 +53,9 @@ def smoSimple(dataset, border, toler, maxIter):
                             b = (b1 + b2) / 2.0
         iter = iter + 1
     return alphas,b
-    
-dataset = LoadDataset("Dataset.txt")
+
+import LoadData
+dataset = LoadData.LoadDataset("Dataset.txt")
 alphas,b = smoSimple(dataset, 0.6, 0.001, 100)
 print (alphas)
 print (b)
