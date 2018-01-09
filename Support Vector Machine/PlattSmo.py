@@ -117,5 +117,5 @@ def smoPlatt(op, maxIter):
 dataset = LoadData.LoadDataset("Dataset.txt")
 op = Operator(dataset, 0.6, 0.001)
 op = smoPlatt(op, 100)
-print (op.w)
-print (op.b)
+x = numpy.mat([1.339746, -0.291183])
+print (x * op.w + op.b)
