@@ -43,6 +43,11 @@ class Operator:
             while (i == j):
                 j = int(random.uniform(0,op.dataCount))
             return j
+    def CalcW(self):
+        m, n = numpy.shape(self.dataMatrix)
+        self.w = numpy.zeros((n, 1))
+        for i in range(m):
+            self.w += numpy.multiply(self.alphas[i] * self.labelMatrix[i], self.dataMatrix[i, :].T)
 
 def innerLoop(op, i):
     Ei = op.CalcEi(i)
@@ -94,10 +99,8 @@ def smoPlatt(op, maxIter):
         
         if entireSet:
             loopRange = range(op.dataCount)
-            print ("Full")
         else:
             loopRange = numpy.nonzero((op.alphas.A > 0) * (op.alphas.A < op.border))[0]
-            print ("Non")
         for i in loopRange:
             thisChanged = innerLoop(op, i)
             whetherChanged = whetherChanged or thisChanged
@@ -106,13 +109,13 @@ def smoPlatt(op, maxIter):
             entireSet = False
         elif whetherChanged == False:
             entireSet = True
-    return op.alphas, op.b
+    op.CalcW()
+    return op
 
 
 
 dataset = LoadData.LoadDataset("Dataset.txt")
 op = Operator(dataset, 0.6, 0.001)
-print (smoPlatt(op,100))
-#alphas,b = smopimple(dataset, 0.6, 0.001, 100)
-#print (alphas)
-#print (b)
+op = smoPlatt(op, 100)
+print (op.w)
+print (op.b)
