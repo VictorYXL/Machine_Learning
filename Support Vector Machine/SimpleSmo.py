@@ -14,17 +14,24 @@ def smoSimple(dataset, border, toler, maxIter):
     b = 0
     iter = 0
 
+    #Outer loop
     while iter < maxIter:
+        #Inner loop
         for i in range(dataCount):
+            #Calculate Ui and Ei
             Ui = float(numpy.multiply(alphas, labelMatrix).T * (dataMatrix * dataMatrix[i,:].T)) + b
             Ei = Ui - float(labelMatrix[i])
 
+            #Select j in random
             j = int(random.uniform(0,dataCount))
             while (i == j):
                 j = int(random.uniform(0,dataCount))
+
+            #Meet the requirements between i and j
             if ((labelMatrix[i] * Ei < -toler) and (alphas[i] < border)) or ((labelMatrix[i] * Ei > toler) and (alphas[i] > 0)):
                 Uj = float(numpy.multiply(alphas, labelMatrix).T * (dataMatrix * dataMatrix[j,:].T)) + b
                 Ej = Uj - float(labelMatrix[j])
+                #Calculate the border 
                 if (labelMatrix[i] == labelMatrix[j]):
                     L = max(0, alphas[j] + alphas[i] - border)
                     H = min(border, alphas[j] + alphas[i])
@@ -32,6 +39,7 @@ def smoSimple(dataset, border, toler, maxIter):
                     L = max(0, alphas[j] - alphas[i])
                     H = min(border, border + alphas[j] - alphas[i])
                 if (L != H):
+                    #Calculate the new alpha[i] and alpha[j]
                     eta = 2.0 * dataMatrix[i,:] * dataMatrix[j,:].T - dataMatrix[i,:] * dataMatrix[i,:].T - dataMatrix[j,:] * dataMatrix[j,:].T
                     if (eta < 0):
                         newAlphaJ = alphas[j] - labelMatrix[j] * (Ei - Ej) / eta
@@ -41,11 +49,13 @@ def smoSimple(dataset, border, toler, maxIter):
                             newAlphaJ = L
                         if (abs(newAlphaJ - alphas[j]) < 0.001):
                            continue
-                        
-                        
                         newAlphaI = alphas[i] - labelMatrix[i] * labelMatrix[j] * (newAlphaJ - alphas[j])
+
+                        #Caluclate the b in two conditions
                         b1 = b - Ei - labelMatrix[i] * (newAlphaI - alphas[i]) * dataMatrix[i,:] * dataMatrix[i,:].T - labelMatrix[j] * (newAlphaJ - alphas[j]) * dataMatrix[i,:] * dataMatrix[j,:].T
                         b2 = b - Ej - labelMatrix[i] * (newAlphaI - alphas[i]) * dataMatrix[i,:] * dataMatrix[j,:].T - labelMatrix[j] * (newAlphaJ - alphas[j]) * dataMatrix[j,:] * dataMatrix[j,:].T
+
+                        #Update the alpha[i], alpha[j] and b
                         alphas[i] = newAlphaI
                         alphas[j] = newAlphaJ
                         if (0 < alphas[i] and alphas[i] < border):
