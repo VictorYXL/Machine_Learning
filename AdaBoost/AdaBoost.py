@@ -104,17 +104,16 @@ def AdaboostTrain(dataArray, labelList, maxIter):
     return classifierList
 
 def AdaClassify(inputFeature, classifierList):
-    totalPredict = [0] * len(inputFeature[0])
+    totalPredict = [0] * len(inputFeature)
     for classifier in classifierList:
         predictValue = StumpClassify(inputFeature, classifier['feature'], classifier['thresh'], classifier['operator'])
         totalPredict = [totalPredict[i] + predictValue[i] * classifier['alpha'] for i in range(len(predictValue))]
     return numpy.sign(totalPredict)
 
-dataArray, labelList = LoadData()
-#bestStump, minError, bestClassEst = BuildStump(dataArray, labelList, [0.2] * 5)
-classifierList = AdaboostTrain(dataArray, labelList,9)
-print(classifierList)
-result = AdaClassify([[5, 5],[0, 0]], classifierList)
-print (result)
+if __name__ == '__main__':
+    dataArray, labelList = LoadData()
+    classifierList = AdaboostTrain(dataArray, labelList,9)
+    result = AdaClassify([[5, 5],[0, 0]], classifierList)
+    print (result)
         
         
