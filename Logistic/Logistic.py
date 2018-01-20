@@ -80,9 +80,9 @@ def ClassifyByLogistic(inX, weights):
     else:
         return 0
 
-
-dataset = LoadDataset("Dataset.txt")
-weights1 = GradAscent(dataset,0.01, 3)
-weights2 = ScotGradAscent(dataset,0.01, 300)
-print(ClassifyByLogistic(numpy.array([1, 10]), weights1))
-DrawSplitLineFor2D(dataset, [weights1, weights2], ['yellow', 'blue'])
+if __name__ == '__main__':
+    dataset = LoadDataset("Dataset.txt")
+    weights1 = GradAscent(dataset,0.01, 3)
+    weights2 = ScotGradAscent(dataset,0.01, 300)
+    print(ClassifyByLogistic(numpy.array([1, 10]), weights1))
+    DrawSplitLineFor2D(dataset, [weights1, weights2], ['yellow', 'blue'])
