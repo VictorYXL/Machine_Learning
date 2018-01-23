@@ -12,9 +12,9 @@ def LoadDataset(fileName):
 
 if __name__ == '__main__':
     trainingDataArray, trainingLabelList = LoadDataset("HorseColicTraining.txt")
-    classifierList, totalPredictValue = AdaBoost.AdaboostTrain(trainingDataArray, trainingLabelList, 10)
+    classifierList, totalPredictValue = Ada    Boost.AdaboostTrain(trainingDataArray, trainingLabelList, 10)
     testDataArray, testLabelList = LoadDataset("HorseColicTest.txt")
     result = AdaBoost.AdaClassify(testDataArray, classifierList)
     errorList = [i for i in range(len(testLabelList)) if testLabelList[i] != result[i]]
     AdaBoost.PlotROC(trainingLabelList, totalPredictValue)
-    #print (errorList)
+    #print (errorList) 
