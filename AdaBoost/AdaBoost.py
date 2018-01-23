@@ -33,16 +33,18 @@ def BuildStump(dataArray, labelList, weight):
     labelMatrix = numpy.mat(labelList).T
     dataCount = len(dataArray)
     featureCount = len(dataArray[0])
-    numStep = 0.1
+    numCount = 10   #Set to 10 to reduce the time for training
     bestClassifier = {}
     bestClassEst = numpy.zeros((dataCount, 1))
     minError = numpy.inf
+    
 
     #Loop 1: Feature
     for featureIndex in range(featureCount):
         tmplist = [dataArray[i][featureIndex] for i in range(len(dataArray))]
         rangeMin = min(tmplist)
         rangeMax = max(tmplist)
+        numStep = (rangeMax - rangeMin) / numCount
         #Loop 2: Thresh
         for threshVal in numpy.arange(rangeMin, rangeMax + numStep, numStep):
             #Loop 3:Operator
@@ -101,8 +103,15 @@ def AdaboostTrain(dataArray, labelList, maxIter):
                 allCorrect = False
         if (allCorrect == True):
             break
-    return classifierList
+    #print(totalPredictValue)
+    return classifierList, totalPredictValue
 
+#Draw ROC with real label and predict label
+def PlotROC(label, predictValue):
+    print(label)
+    print(predictValue)
+
+#Classify
 def AdaClassify(inputFeature, classifierList):
     totalPredict = [0] * len(inputFeature)
     for classifier in classifierList:
@@ -115,5 +124,3 @@ if __name__ == '__main__':
     classifierList = AdaboostTrain(dataArray, labelList,9)
     result = AdaClassify([[5, 5],[0, 0]], classifierList)
     print (result)
-        
-        
