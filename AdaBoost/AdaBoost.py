@@ -1,4 +1,5 @@
 import numpy
+import matplotlib.pyplot
 def LoadData():
     dataArray = \
     [
@@ -106,10 +107,33 @@ def AdaboostTrain(dataArray, labelList, maxIter):
     #print(totalPredictValue)
     return classifierList, totalPredictValue
 
-#Draw ROC with real label and predict label
-def PlotROC(label, predictValue):
-    print(label)
-    print(predictValue)
+#Draw ROC with label and predict strength (confidence)
+def PlotROC(labelList, predStrengthList):
+    x = 1.0
+    y = 1.0
+    AUC = 0.0   #Area of ROC
+    posCount = sum([i for i in labelList if i == 1.0])      #TP + FN
+    nagCount = sum([-i for i in labelList if i == -1.0])    #FP + TN
+
+    sortedPredStrengthIndex = numpy.argsort(predStrengthList)
+
+    fig = matplotlib.pyplot.figure()
+    ax = matplotlib.pyplot.subplot(111)
+    for index in sortedPredStrengthIndex:
+        label = labelList[index]
+        ox = x
+        oy = y
+        if (label == 1.0):
+            y = y - 1.0 / posCount
+        else:
+            x = x - 1.0 / nagCount
+            AUC = AUC + y * (1.0 / nagCount)
+        ax.plot([ox, x], [oy, y], 'b--')
+    matplotlib.pyplot.xlabel('FPR = FP / (FP + TN)')
+    matplotlib.pyplot.ylabel('TPR = TP / (TP + FN)')
+    matplotlib.pyplot.show()
+    return AUC
+
 
 #Classify
 def AdaClassify(inputFeature, classifierList):
@@ -121,6 +145,6 @@ def AdaClassify(inputFeature, classifierList):
 
 if __name__ == '__main__':
     dataArray, labelList = LoadData()
-    classifierList = AdaboostTrain(dataArray, labelList,9)
+    classifierList, predStrengthList = AdaboostTrain(dataArray, labelList,9)
     result = AdaClassify([[5, 5],[0, 0]], classifierList)
     print (result)
