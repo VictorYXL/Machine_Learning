@@ -1,15 +1,17 @@
 #http://www.cnblogs.com/jerrylead/archive/2011/03/13/1982639.html
+import sys
+sys.path.append("../Basic Functions")
 import random
 import numpy
 import matplotlib
-import LoadData
+from LoadData import LoadData
 
-def smoSimple(dataset, border, toler, maxIter):
-    dataMatrix = numpy.mat(dataset['data'])
-    labelMatrix = numpy.mat(dataset['label']).T
+def smoSimple(dataArray, labelList, border, toler, maxIter):
+    dataMatrix = numpy.mat(dataArray)
+    labelMatrix = numpy.mat(labelList).T
 
     dataCount = len(dataMatrix)
-    vectorLen = len(dataset['data'][0])
+    vectorLen = len(dataArray[0])
     alphas = numpy.mat(numpy.zeros((dataCount, 1)))
     b = 0
     iter = 0
@@ -67,8 +69,8 @@ def smoSimple(dataset, border, toler, maxIter):
         iter = iter + 1
     return alphas,b
 
-
-dataset = LoadData.LoadDataset("Dataset.txt")
-alphas,b = smoSimple(dataset, 0.6, 0.001, 100)
-print (alphas)
-print (b)
+if __name__ == '__main__':
+    dataArray, labelList = LoadData("Dataset.txt")
+    alphas,b = smoSimple(dataArray, labelList, 0.6, 0.001, 100)
+    print (alphas)
+    print (b)

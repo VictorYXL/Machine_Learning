@@ -1,17 +1,19 @@
+import sys
+sys.path.append("../Basic Functions")
 import random
 import numpy
 import matplotlib
-import LoadData
+from LoadData import LoadData
 
 #Class Operator
 class Operator:
     #Init 
-    def __init__(self, dataset, border, toler):
-        self.dataMatrix = numpy.mat(dataset['data'])
-        self.labelMatrix = numpy.mat(dataset['label']).T
+    def __init__(self, dataArray, labelList, border, toler):
+        self.dataMatrix = numpy.mat(dataArray)
+        self.labelMatrix = numpy.mat(labelList).T
         self.border = border
         self.toler = toler
-        self.dataCount = len(dataset['data'])
+        self.dataCount = len(dataArray)
         self.alphas = numpy.mat(numpy.zeros((self.dataCount, 1)))
         self.b = 0
         self.eCache = numpy.mat(numpy.zeros((self.dataCount, 2)))
@@ -141,8 +143,8 @@ def classify(input, op):
         return 1
     else:
         return -1
-
-dataset = LoadData.LoadDataset("Dataset.txt")
-op = Operator(dataset, 0.6, 0.001)
-op = smoPlatt(op, 100)
-print (classify(numpy.mat([1.339746, -0.291183]), op))
+if __name__ == '__main__':
+    dataArray, labelList = LoadData("Dataset.txt")
+    op = Operator(dataArray, labelList, 0.6, 0.001)
+    op = smoPlatt(op, 100)
+    print (classify(numpy.mat([1.339746, -0.291183]), op))

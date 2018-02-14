@@ -3,14 +3,14 @@ import numpy
 from math import *
 #Load dataset
 def LoadDataset(fileName):
-    label = []
     sentenceList = []
+    labelList = []
 
     file = open(fileName, "r")
     for line in file.readlines():
-        label.append(int(line[0]))
+        labelList.append(int(line[0]))
         sentenceList.append(re.split('\W+',line.lower())[1:-1])
-    return {'labelList':label, 'sentenceList':sentenceList}
+    return sentenceList, labelList
 
 #Get all words vector
 def GetAllWords(sentenceList):
@@ -31,11 +31,11 @@ def SentenceToVector(keywords, sentence):
     return vector
 #P(Ci|W) = P(W|Ci)*P(Ci)/P(W) -> P(W1|Ci)*P(W2|Ci)*...*P(Wn|Ci)*P(Ci)/(P(W1)*P(W2)*...*P(Wn)) 
 #Get P(Wm|Cn), P(Ci), P(Wj)
-def TrainNBModel(dataset):
-    allKeyWords = GetAllWords(dataset['sentenceList'])
+def TrainNBModel(sentenceList, labelList):
+    allKeyWords = GetAllWords(sentenceList)
     trainMatrix = []
-    trainLabel = dataset['labelList']
-    for sentence in dataset['sentenceList']:
+    trainLabel = labelList
+    for sentence in sentenceList:
         trainMatrix.append(SentenceToVector(allKeyWords, sentence)) 
     
     #P(Ci)
@@ -78,12 +78,11 @@ def ClassifyByNaiveBayes(model, sentence):
     #print pCiW
     return pCiW / sum(pCiW)
 
-
-dataset = LoadDataset("Dataset.txt")
-model = TrainNBModel(dataset)
-#print model
-print(ClassifyByNaiveBayes(model, "I love you"))
-print(ClassifyByNaiveBayes(model, "I want to help you"))
-print(ClassifyByNaiveBayes(model, "I want to fuck you"))
-print(ClassifyByNaiveBayes(model, "Fuck this stupid dog"))
-print(ClassifyByNaiveBayes(model, "Love to fuck you"))
+if __name__ == '__main__':
+    sentenceList, labelList = LoadDataset("Dataset.txt")
+    model = TrainNBModel(sentenceList, labelList)
+    print(ClassifyByNaiveBayes(model, "I love you"))
+    print(ClassifyByNaiveBayes(model, "I want to help you"))
+    print(ClassifyByNaiveBayes(model, "I want to fuck you"))
+    print(ClassifyByNaiveBayes(model, "Fuck this stupid dog"))
+    print(ClassifyByNaiveBayes(model, "Love to fuck you"))

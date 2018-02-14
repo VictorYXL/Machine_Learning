@@ -53,7 +53,6 @@ def ChooseBestFeatureToSplit(dataset):
             minShannonEnt = shannonEnt
             minFeature = i
     return minFeature
-    #print(featureCount)
 
 #当相同feature对应不同label时，少数服从多数
 def MajorityCnt(labelList):
@@ -111,27 +110,31 @@ def ClassifyByDT(DecisitionTree, featureVector):
         else:
             return None
     return classLabel
+
 #决策树的存储和读取
 def StoreTree(decTree, fileName):
     fw = open(fileName, 'wb')
     #dump直接导出到文件，dumps导出到字符串
     pickle.dump(decTree, fw)
     fw.close()
+
 def LoadTree(fileName):
     fr = open(fileName, 'rb')
     decTree = pickle.load(fr)
     fr.close()
     return decTree
-dataset = \
-    [
-        [1, 1, 'yes'],
-        [1, 1, 'yes'],
-        [1, 0, 'no'],
-        [0, 1, 'no'],
-        [0, 1, 'no']
-    ]
-#类别越多，熵越大，如将第一个类别改为maybe，熵会增大
-#print(CalShannonEnt(dataset))
-#print(CreateDecisionTree([['yes'], ['yes'], ['no'], ['no'], ['no']]))
-decTree = CreateDecisionTree(dataset)
-print(ClassifyByDT(decTree, [1, 1]))
+if __name__ == '__main__':
+    dataset = \
+        [
+            [1, 1, 'yes'],
+            [1, 1, 'yes'],
+            [1, 0, 'no'],
+            [0, 1, 'no'],
+            [0, 1, 'no']
+        ]
+
+    #类别越多，熵越大，如将第一个类别改为maybe，熵会增大
+    #print(CalShannonEnt(dataset))
+    #print(CreateDecisionTree([['yes'], ['yes'], ['no'], ['no'], ['no']]))
+    decTree = CreateDecisionTree(dataset)
+    print(ClassifyByDT(decTree, [1, 1]))

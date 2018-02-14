@@ -1,15 +1,8 @@
+import sys
+sys.path.append("../Basic Functions")
 import numpy 
 import matplotlib.pyplot
-
-def LoadDataset(fileName):
-    file = open(fileName)
-    dataArray = []
-    labelList = []
-    for line in file.readlines():
-        data = line.strip().split('\t')
-        dataArray.append([float(item) for item in data[:-1]])
-        labelList.append(float(data[-1]))
-    return dataArray, labelList
+from LoadData import LoadData
 
 # w = (X.T * X)^(-1) * (X.T * Y)
 def StandRegres(dataArray, labelList):
@@ -102,20 +95,20 @@ def Plot(X, Y, w, LWLRPredY):
         ax.plot([X[sortedXIndex[index]], X[sortedXIndex[index + 1]]], [LWLRPredY[sortedXIndex[index]], LWLRPredY[sortedXIndex[index + 1]]], 'g--')
     matplotlib.pyplot.show()
 
+if __name__ == '__main__':
+    #dataArray, labelList = LoadData('Dataset1.txt')
+    dataArray, labelList = LoadData('Dataset2.txt')
 
-#dataArray, labelList = LoadDataset('Dataset1.txt')
-dataArray, labelList = LoadDataset('Dataset2.txt')
+    print(StageWise(dataArray, labelList, esp = 0.001, numIt = 10000))
+    print(StandRegres(dataArray, labelList))
 
-print(StageWise(dataArray, labelList, esp = 0.001, numIt = 10000))
-print(StandRegres(dataArray, labelList))
-
-# w = StandRegres(dataArray, labelList)
-# StandPredY = [(w[0] + dataArray[i][1] * w[1]).tolist()[0][0] for i in range(len(dataArray))]
-# LWLRPredY = [LocalWeightLinearRegress(data, dataArray, labelList, 0.01).tolist()[0][0] for data in dataArray]
-# w1 = RidgeRegres(dataArray, labelList)
-# RidgePredY = [(w1[0] + dataArray[i][1] * w1[1]).tolist()[0][0] for i in range(len(dataArray))]
-# x = [i[1] for i in dataArray]
-# Plot(x, labelList, w.flatten().A[0], LWLRPredY)
-# print(RegError(labelList, StandPredY))
-# print(RegError(labelList, RidgePredY))
-# print(RegError(labelList, LWLRPredY))
+    # w = StandRegres(dataArray, labelList)
+    # StandPredY = [(w[0] + dataArray[i][1] * w[1]).tolist()[0][0] for i in range(len(dataArray))]
+    # LWLRPredY = [LocalWeightLinearRegress(data, dataArray, labelList, 0.01).tolist()[0][0] for data in dataArray]
+    # w1 = RidgeRegres(dataArray, labelList)
+    # RidgePredY = [(w1[0] + dataArray[i][1] * w1[1]).tolist()[0][0] for i in range(len(dataArray))]
+    # x = [i[1] for i in dataArray]
+    # Plot(x, labelList, w.flatten().A[0], LWLRPredY)
+    # print(RegError(labelList, StandPredY))
+    # print(RegError(labelList, RidgePredY))
+    # print(RegError(labelList, LWLRPredY))

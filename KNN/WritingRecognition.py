@@ -1,8 +1,8 @@
-__author__ = 'Yang'
-from numpy import *
-from kNN import *
 import os, sys
-def img2vector (filename):
+from numpy import *
+from KNN import *
+
+def Img2Vector (filename):
     vector = zeros((1,1024))
     fr = open (filename)
     for i in range(32):
@@ -10,10 +10,11 @@ def img2vector (filename):
         for j in range(32):
             vector [0,32*i+j] = int(line[j])
     return vector
-def handwritingRecognition():
+
+def HandwritingRecognition():
     #Read dir
     hwLabels= []
-    trainingFileList = os.listdir('trainingDigits')
+    trainingFileList = os.listdir('TrainingDigits')
     trainMatrix = zeros((len(trainingFileList),1024))
 
     for i in range (len(trainingFileList)):
@@ -23,10 +24,12 @@ def handwritingRecognition():
         #添加标签
         hwLabels.append(numStr)
         #获取所有训练样本
-        trainMatrix[i,:] = img2vector('trainingDigits/%s'%fileName)
+        trainMatrix[i,:] = Img2Vector('TrainingDigits/%s'%fileName)
     #获取测试数据
-    testFileName = 'testDigits/test.txt'
-    testVector = img2vector(testFileName)
+    testFileName = 'TestDigits/test.txt'
+    testVector = Img2Vector(testFileName)
     result = Classify0(testVector,trainMatrix,hwLabels,3)
     print (result)
-handwritingRecognition()
+    
+if __name__ == '__main__':
+    HandwritingRecognition()
