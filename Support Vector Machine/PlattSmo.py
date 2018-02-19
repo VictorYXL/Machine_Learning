@@ -3,7 +3,7 @@ sys.path.append("../Basic Functions")
 import random
 import numpy
 import matplotlib
-from LoadData import LoadData
+from LoadData import LoadDataAndLabel
 
 #Class Operator
 class Operator:
@@ -144,7 +144,7 @@ def classify(input, op):
     else:
         return -1
 if __name__ == '__main__':
-    dataArray, labelList = LoadData("Dataset.txt")
+    dataArray, labelList = LoadDataAndLabel("Dataset.txt")
     op = Operator(dataArray, labelList, 0.6, 0.001)
     op = smoPlatt(op, 100)
     print (classify(numpy.mat([1.339746, -0.291183]), op))

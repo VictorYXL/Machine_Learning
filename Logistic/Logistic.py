@@ -3,7 +3,7 @@ sys.path.append("../Basic Functions")
 import math
 import numpy
 import matplotlib.pyplot as plt
-from LoadData import LoadData
+from LoadData import LoadDataAndLabel
 #from compiler.ast import flatten
 #from funcy import flatten
 '''
@@ -72,7 +72,7 @@ def ClassifyByLogistic(inX, weights):
         return 0
 
 if __name__ == '__main__':
-    dataArray, labelList = LoadData("Dataset.txt")
+    dataArray, labelList = LoadDataAndLabel("Dataset.txt")
     weights1 = GradAscent(dataArray, labelList,0.01, 3)
     weights2 = ScotGradAscent(dataArray, labelList,0.01, 300)
     print(ClassifyByLogistic(numpy.array([1, 10]), weights1))

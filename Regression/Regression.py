@@ -2,7 +2,7 @@ import sys
 sys.path.append("../Basic Functions")
 import numpy 
 import matplotlib.pyplot
-from LoadData import LoadData
+from LoadData import LoadDataAndLabel
 
 # w = (X.T * X)^(-1) * (X.T * Y)
 def StandRegres(dataArray, labelList):
@@ -96,8 +96,8 @@ def Plot(X, Y, w, LWLRPredY):
     matplotlib.pyplot.show()
 
 if __name__ == '__main__':
-    #dataArray, labelList = LoadData('Dataset1.txt')
-    dataArray, labelList = LoadData('Dataset2.txt')
+    #dataArray, labelList = LoadDataAndLabel('Dataset1.txt')
+    dataArray, labelList = LoadDataAndLabel('Dataset2.txt')
 
     print(StageWise(dataArray, labelList, esp = 0.001, numIt = 10000))
     print(StandRegres(dataArray, labelList))

@@ -2,7 +2,7 @@ import re
 import numpy
 from math import *
 #Load dataset
-def LoadDataset(fileName):
+def LoadData(fileName):
     sentenceList = []
     labelList = []
 
@@ -79,7 +79,7 @@ def ClassifyByNaiveBayes(model, sentence):
     return pCiW / sum(pCiW)
 
 if __name__ == '__main__':
-    sentenceList, labelList = LoadDataset("Dataset.txt")
+    sentenceList, labelList = LoadData("Dataset.txt")
     model = TrainNBModel(sentenceList, labelList)
     print(ClassifyByNaiveBayes(model, "I love you"))
     print(ClassifyByNaiveBayes(model, "I want to help you"))

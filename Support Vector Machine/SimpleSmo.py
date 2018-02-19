@@ -4,7 +4,7 @@ sys.path.append("../Basic Functions")
 import random
 import numpy
 import matplotlib
-from LoadData import LoadData
+from LoadData import LoadDataAndLabel
 
 def smoSimple(dataArray, labelList, border, toler, maxIter):
     dataMatrix = numpy.mat(dataArray)
@@ -70,7 +70,7 @@ def smoSimple(dataArray, labelList, border, toler, maxIter):
     return alphas,b
 
 if __name__ == '__main__':
-    dataArray, labelList = LoadData("Dataset.txt")
+    dataArray, labelList = LoadDataAndLabel("Dataset.txt")
     alphas,b = smoSimple(dataArray, labelList, 0.6, 0.001, 100)
     print (alphas)
     print (b)

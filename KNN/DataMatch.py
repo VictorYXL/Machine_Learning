@@ -5,7 +5,7 @@ from numpy import *
 import matplotlib
 import matplotlib.pyplot as plt
 from KNN import *
-from LoadData import LoadData
+from LoadData import LoadDataAndLabel
 
 #测试分类器
 def DataClassTest(normMatrix, ranges, minValues, labelList):
@@ -39,7 +39,7 @@ def ClassifyPerson(normMatrix, ranges, minValues, labelList):
     print("You will probably like this person:",resultList[int(classifierResult)-1])
 
 if __name__ == '__main__':
-    dataArray,labelList = LoadData('DatingTestSet2.txt')
+    dataArray,labelList = LoadDataAndLabel('DatingTestSet2.txt')
     dataMatrix = array(dataArray)
     normMatrix,ranges,minValues = AutoNorm(dataMatrix)
     DataClassTest(normMatrix, ranges, minValues, labelList)
