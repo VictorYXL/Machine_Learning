@@ -17,12 +17,12 @@ def SplitDataset(dataArray, labelList, feature, value):
     subLabelList2 = [labelList[index] for index in range(len(dataArray)) if dataArray[index][feature] <= value]
     return subDataArray1, subLabelList1, subDataArray2, subLabelList2
 
-def ChooseBestFeature(dataArray, labelList):
+def ChooseBestFeature(dataArray, labelList, maxDataCount, minErrorReduce):
     dataCount = len(dataArray)
     if (dataCount == 0):
         return None, None
-    elif (dataCount == 1):
-        return None, labelList[0]
+    elif (dataCount <= maxDataCount):
+        return None, numpy.mean(labelList)
     featureCount = len(dataArray[0])
     minError = numpy.inf
     bestFeature = 0
@@ -46,17 +46,25 @@ def ChooseBestFeature(dataArray, labelList):
                 bestFeature = feature
                 bestValue = value
                 minError = error1 + error2
+    if (len(dataArray) > 0):
+        currentError = numpy.var(labelList) * len(dataArray)
+    else:
+        currentError = 0
+    if (currentError - minError <= minErrorReduce):
+        return None, numpy.mean(labelList)
     return bestFeature, bestValue
 
 #Create tree
-def CreateTree(dataArray, labelList):
-    feature, value = ChooseBestFeature(dataArray, labelList)
+#maxDataCount: max count of each subdataset
+#minErrorReduce:do not split dataset if the reducement of error is not enough
+def CreateTree(dataArray, labelList, maxDataCount, minErrorReduce):
+    feature, value = ChooseBestFeature(dataArray, labelList, maxDataCount, minErrorReduce)
     if feature == None:
         node = Node(0, value, None, None)
     else:
         subDataArray1, subLabelList1, subDataArray2, subLabelList2 = SplitDataset(dataArray, labelList, feature, value)
-        leftTree = CreateTree(subDataArray1, subLabelList1)
-        rightTree = CreateTree(subDataArray2, subLabelList2)
+        leftTree = CreateTree(subDataArray1, subLabelList1, maxDataCount, minErrorReduce)
+        rightTree = CreateTree(subDataArray2, subLabelList2, maxDataCount, minErrorReduce)
         node = Node(feature, value, leftTree, rightTree)
     return node
 
@@ -64,6 +72,7 @@ def CreateTree(dataArray, labelList):
 
 if __name__ == '__main__':
     dataArray, labelList = LoadDataAndLabel("Dataset2.txt")
-    tree = CreateTree(dataArray, labelList)
+    tree = CreateTree(dataArray, labelList, 4, 1)
+    print(isinstance(tree, Node))
     print(tree.value)
     print(tree.left.value)
