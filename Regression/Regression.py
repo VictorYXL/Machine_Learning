@@ -8,9 +8,6 @@ from LoadData import LoadDataAndLabel
 def StandRegres(dataArray, labelList):
     dataMat = numpy.mat(dataArray)
     labelMat = numpy.mat(labelList)
-    dataMat = (dataMat - numpy.mean(dataMat, 0)) / numpy.var(dataMat, 0)
-    labelMat = labelMat - numpy.mean(labelMat)
-
     if numpy.linalg.det(dataMat.T * dataMat) == 0:
         print("No x^(-1)")
         return
@@ -20,14 +17,12 @@ def StandRegres(dataArray, labelList):
 def LocalWeightLinearRegress(testX, dataArray, labelList, k = 1.0):
     dataMat = numpy.mat(dataArray)
     labelMat = numpy.mat(labelList)
-    dataMat = (dataMat - numpy.mean(dataMat, 0)) / numpy.var(dataMat, 0)
-    labelMat = labelMat - numpy.mean(labelMat)
     weight = numpy.zeros((len(dataArray), len(dataArray)))
 
     for i in range(len(dataArray)):
         weight[i, i] = numpy.exp((testX - dataMat[i, :]) * (testX - dataMat[i, :]).T / (-2 * k ** 2))
 
-    if numpy.linalg.det(dataMat.T * dataMat) == 0:
+    if numpy.linalg.det(dataMat.T * (weight * dataMat)) == 0:
         print("No x^(-1)")
         return
     return numpy.mat(testX) * (dataMat.T * (weight * dataMat)).I * (dataMat.T * (weight * labelMat.T)) 
@@ -37,8 +32,6 @@ def LocalWeightLinearRegress(testX, dataArray, labelList, k = 1.0):
 def RidgeRegres(dataArray, labelList, lam = 0.2):
     dataMat = numpy.mat(dataArray)
     labelMat = numpy.mat(labelList)
-    dataMat = (dataMat - numpy.mean(dataMat, 0)) / numpy.var(dataMat, 0)
-    labelMat = labelMat - numpy.mean(labelMat)
     I = numpy.eye(numpy.shape(dataMat)[1])
 
     if numpy.linalg.det(dataMat.T * dataMat + lam * I) == 0:
@@ -49,9 +42,6 @@ def RidgeRegres(dataArray, labelList, lam = 0.2):
 def StageWise(dataArray, labelList, esp = 0.01, numIt = 1000):
     dataMat = numpy.mat(dataArray)
     labelMat = numpy.mat(labelList)
-    dataMat = (dataMat - numpy.mean(dataMat, 0)) / numpy.var(dataMat, 0)
-    labelMat = labelMat - numpy.mean(labelMat)
-
     w = numpy.zeros((1, len(dataArray[0])))
     minError = numpy.inf
 
@@ -76,13 +66,21 @@ def RegError(labelList, predLabelList):
     diffList = [(labelList[i] - predLabelList[i]) ** 2 for i in range(len(labelList))]
     return sum(diffList)
 
+def WholeError(dataArray, labelList):
+    w = StandRegres(dataArray, labelList)
+    dataMat = numpy.mat(dataArray)
+    labelMat = numpy.mat(labelList)
+    predLabel = dataMat * w
+    wholeError = sum(numpy.power((labelMat.T - predLabel), 2))
+    return wholeError
+
+
 #scatter: point, scatter(x array, y array)
 #plot: line, plot([x0, x1, x2], [y0, y1, y2])
 def Plot(X, Y, w, LWLRPredY):
     fig = matplotlib.pyplot.figure()
     ax = matplotlib.pyplot.subplot(111)
     ax.scatter(X, Y, c = 'blue')
-    #ax.scatter(X, LWLRPredY, c = 'green')
     
     x1 = min(X)
     y1 = w[0] + x1 * w[1]
@@ -96,19 +94,19 @@ def Plot(X, Y, w, LWLRPredY):
     matplotlib.pyplot.show()
 
 if __name__ == '__main__':
-    #dataArray, labelList = LoadDataAndLabel('Dataset1.txt')
-    dataArray, labelList = LoadDataAndLabel('Dataset2.txt')
+    dataArray, labelList = LoadDataAndLabel('Dataset1.txt')
+    
+    w = StandRegres(dataArray, labelList)
+    StandPredY = [numpy.mat(dataArray[i]) * w for i in range(len(dataArray))]
+    LWLRPredY = [LocalWeightLinearRegress(data, dataArray, labelList, 0.01).tolist()[0][0] for data in dataArray]
+    w1 = RidgeRegres(dataArray, labelList)
+    RidgePredY = [(w1[0] + dataArray[i][1] * w1[1]).tolist()[0][0] for i in range(len(dataArray))]
+    x = [i[1] for i in dataArray]
+    Plot(x, labelList, w.flatten().A[0], LWLRPredY)
+
+    print(RegError(labelList, StandPredY))
+    print(RegError(labelList, RidgePredY))
+    print(RegError(labelList, LWLRPredY))
 
     print(StageWise(dataArray, labelList, esp = 0.001, numIt = 10000))
-    print(StandRegres(dataArray, labelList))
-
-    # w = StandRegres(dataArray, labelList)
-    # StandPredY = [(w[0] + dataArray[i][1] * w[1]).tolist()[0][0] for i in range(len(dataArray))]
-    # LWLRPredY = [LocalWeightLinearRegress(data, dataArray, labelList, 0.01).tolist()[0][0] for data in dataArray]
-    # w1 = RidgeRegres(dataArray, labelList)
-    # RidgePredY = [(w1[0] + dataArray[i][1] * w1[1]).tolist()[0][0] for i in range(len(dataArray))]
-    # x = [i[1] for i in dataArray]
-    # Plot(x, labelList, w.flatten().A[0], LWLRPredY)
-    # print(RegError(labelList, StandPredY))
-    # print(RegError(labelList, RidgePredY))
-    # print(RegError(labelList, LWLRPredY))
+    print(w)
