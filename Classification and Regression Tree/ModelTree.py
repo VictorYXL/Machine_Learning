@@ -55,17 +55,17 @@ def CreateModelTree(dataArray, resultList, maxDataCount, minErrorReduce):
         node = Node(feature, value, leftTree, rightTree)
     return node
 
-def ForecastByRegresTree(tree, inData):
+def ForecastByModelTree(tree, inData):
     if (tree.left == None and tree.right == None):
         return numpy.mat(inData) * tree.value
     if (inData[tree.feature] > tree.value):
-        return ForecastByRegresTree(tree.left, inData)
+        return ForecastByModelTree(tree.left, inData)
     else:
-        return ForecastByRegresTree(tree.right, inData)
+        return ForecastByModelTree(tree.right, inData)
 
 if __name__ == '__main__':
     dataArray, resultList = LoadDataAndLabel("Dataset2.txt")
     tree = CreateModelTree(dataArray, resultList, 4, 0.1)
     #ShowTree(tree)
-    print(ForecastByRegresTree(tree, [0.530897]))
-    print(ForecastByRegresTree(tree, [0.993349]))
+    print(ForecastByModelTree(tree, [0.530897]))
+    print(ForecastByModelTree(tree, [0.993349]))
