@@ -7,10 +7,10 @@ from Tree import *
 #Split the dataset by some feature and its value
 def SplitDataset(dataArray, resultList, feature, value):
     subDataArray1 = [dataArray[index] for index in range(len(dataArray)) if dataArray[index][feature] > value]
-    subresultList1 = [resultList[index] for index in range(len(dataArray)) if dataArray[index][feature] > value]
+    subResultList1 = [resultList[index] for index in range(len(dataArray)) if dataArray[index][feature] > value]
     subDataArray2 = [dataArray[index] for index in range(len(dataArray)) if dataArray[index][feature] <= value]
-    subresultList2 = [resultList[index] for index in range(len(dataArray)) if dataArray[index][feature] <= value]
-    return subDataArray1, subresultList1, subDataArray2, subresultList2
+    subResultList2 = [resultList[index] for index in range(len(dataArray)) if dataArray[index][feature] <= value]
+    return subDataArray1, subResultList1, subDataArray2, subResultList2
 
 def ChooseBestFeature(dataArray, resultList, maxDataCount, minErrorReduce):
     dataCount = len(dataArray)
@@ -29,14 +29,14 @@ def ChooseBestFeature(dataArray, resultList, maxDataCount, minErrorReduce):
         valueList = [data[feature] for data in dataArray]
         valueSet = set(valueList)
         for value in valueSet:
-            subDataArray1, subresultList1, subDataArray2, subresultList2 = SplitDataset(dataArray, resultList, feature, value)
-            #Use variance to description the siaorder
+            subDataArray1, subResultList1, subDataArray2, subResultList2 = SplitDataset(dataArray, resultList, feature, value)
+            #Use variance to description the disorder
             if (len(subDataArray1) > 0):
-                error1 = numpy.var(subresultList1) * len(subDataArray1)
+                error1 = numpy.var(subResultList1) * len(subDataArray1)
             else:
                 error1 = 0
             if (len(subDataArray2) > 0):
-                error2 = numpy.var(subresultList2) * len(subDataArray2)
+                error2 = numpy.var(subResultList2) * len(subDataArray2)
             else:
                 error2 = 0
             if (error1 + error2 < minError):
@@ -60,9 +60,9 @@ def CreateRegresTree(dataArray, resultList, maxDataCount, minErrorReduce):
         #Leaf
         node = Node(0, value, None, None)
     else:
-        subDataArray1, subresultList1, subDataArray2, subresultList2 = SplitDataset(dataArray, resultList, feature, value)
-        leftTree = CreateRegresTree(subDataArray1, subresultList1, maxDataCount, minErrorReduce)
-        rightTree = CreateRegresTree(subDataArray2, subresultList2, maxDataCount, minErrorReduce)
+        subDataArray1, subResultList1, subDataArray2, subResultList2 = SplitDataset(dataArray, resultList, feature, value)
+        leftTree = CreateRegresTree(subDataArray1, subResultList1, maxDataCount, minErrorReduce)
+        rightTree = CreateRegresTree(subDataArray2, subResultList2, maxDataCount, minErrorReduce)
         node = Node(feature, value, leftTree, rightTree)
     return node
 
