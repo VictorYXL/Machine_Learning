@@ -57,7 +57,7 @@ def CreateModelTree(dataArray, resultList, maxDataCount, minErrorReduce):
 
 def ForecastByModelTree(tree, inData):
     if (tree.left == None and tree.right == None):
-        return numpy.mat(inData) * tree.value
+        return (numpy.mat(inData) * tree.value).tolist()[0][0]
     if (inData[tree.feature] > tree.value):
         return ForecastByModelTree(tree.left, inData)
     else:
