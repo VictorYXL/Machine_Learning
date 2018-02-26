@@ -10,8 +10,9 @@ def Distance(vec1 ,vec2):
     return ((vec1 - vec2) * (vec1 - vec2).T)[0,0]
 
 #Create k center points
-def CreateCenter(dataMat, k):
+def CreateCenter(dataArray, k):
     featureCount = len(dataArray[0])
+    dataMat = numpy.mat(dataArray)
     centerPointMat = numpy.zeros((k, featureCount))
 
     for i in range(featureCount):
@@ -22,11 +23,10 @@ def CreateCenter(dataMat, k):
     return centerPointMat
 
 #K-Means cluster
-def KMeans(dataArray, k):
+def KMeans(centerPointMat, dataArray):
     dataCount = len(dataArray)
     featureCount = len(dataArray[0])
     dataMat = numpy.mat(dataArray)
-    centerPointMat = CreateCenter(dataMat, k)
     #Record the Cluster Assment and each distance as: clusterAssment[data_index] = [belonged_cluster, distance]
     clusterAssment = [[0, 0] for i in range(dataCount)]
     whetherChanged = True
@@ -46,7 +46,7 @@ def KMeans(dataArray, k):
                 #Update the cluster
                 dataInCluster = [dataMat[index] for index in range(dataCount) if clusterAssment[index][0] == newCluster]
                 centerPointMat[newCluster] = numpy.mean(dataInCluster, 0)
-    return centerPointMat, clusterAssment
+    return clusterAssment
 
 def Plot(dataArray, centerPointMat, clusterAssment):
     fig = matplotlib.pyplot.figure()
@@ -65,6 +65,7 @@ def Plot(dataArray, centerPointMat, clusterAssment):
 
 if __name__ == '__main__':
     dataArray = LoadData("Dataset.txt")
-    centerPointMat, clusterAssment = KMeans(dataArray, 4)
+    centerPointMat = CreateCenter(dataArray, 4)
+    clusterAssment = KMeans(centerPointMat, dataArray)
     print(centerPointMat)
     Plot(dataArray, centerPointMat, clusterAssment)
