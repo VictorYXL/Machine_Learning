@@ -1,9 +1,9 @@
 import sys
 sys.path.append("../Basic Functions")
-from LoadData import LoadData
 import numpy
 import matplotlib.pyplot
 import random
+from LoadData import LoadData
 
 #Calculate the distance
 def Distance(vec1 ,vec2):
@@ -57,6 +57,10 @@ def KMeans(dataArray, clusterPointMat):
 def BinKMeans(dataArray, k):
     dataCount = len(dataArray)
     featureCount = len(dataArray[0])
+
+    if k > dataCount:
+        return None
+
     dataMat = numpy.mat(dataArray)
     #Init cluster and assement
     clusterAssement = [[] for i in range(k)]
@@ -69,30 +73,36 @@ def BinKMeans(dataArray, k):
     for times in range(1, k):
         maxErrorReduce = 0
         #Find the best to split
-
         for clusterIndex in range(times):
             dataInCluster = [dataArray[index] for index in clusterAssement[clusterIndex]]
-            if len(dataInCluster) != 0:
-                newClusterPointMat = CreateCluster(dataInCluster, 2)
-                newClusterAssement = KMeans(dataInCluster, newClusterPointMat)
-                notSplitError = clusterError(dataArray, clusterPointMat, clusterAssement, clusterIndex)
-                splitError1 = clusterError(dataInCluster, newClusterPointMat, newClusterAssement, 0)
-                splitError2 = clusterError(dataInCluster, newClusterPointMat, newClusterAssement, 1)
-                if (notSplitError - splitError1 - splitError2 > maxErrorReduce):
-                    maxErrorReduce = notSplitError - splitError1 - splitError2
-                    clusterToSplit = clusterIndex
-                    splitPointMat = newClusterPointMat
-                    bestAssement = newClusterAssement
+            if len(dataInCluster) >= 2:
+                #Make sure split is successful
+                while maxErrorReduce == 0:
+                    newClusterPointMat = CreateCluster(dataInCluster, 2)
+                    newClusterAssement = KMeans(dataInCluster, newClusterPointMat)
+                    notSplitError = clusterError(dataArray, clusterPointMat, clusterAssement, clusterIndex)
+                    splitError1 = clusterError(dataInCluster, newClusterPointMat, newClusterAssement, 0)
+                    splitError2 = clusterError(dataInCluster, newClusterPointMat, newClusterAssement, 1)
+                    #Choose
+                    if (notSplitError - splitError1 - splitError2 > maxErrorReduce):
+                        maxErrorReduce = notSplitError - splitError1 - splitError2
+                        clusterToSplit = clusterIndex
+                        splitPointMat = newClusterPointMat
+                        bestAssement = newClusterAssement
         #Split
         clusterPointMat[clusterToSplit, :] = splitPointMat[0, :]
         clusterPointMat[times, :] = splitPointMat[1, :]
         oldAssement = clusterAssement[clusterToSplit].copy()
         clusterAssement[clusterToSplit] = [oldAssement[index] for index in bestAssement[0]]
         clusterAssement[times] = [oldAssement[index] for index in bestAssement[1]]
+        print(clusterPointMat)
     return clusterPointMat, clusterAssement
 
 def clusterError(dataArray, clusterPointMat, clusterAssement, clusterIndex):
     dataInCluster = [dataArray[index] for index in clusterAssement[clusterIndex]]
+    #Make sure the result is count
+    if len(dataInCluster) == 0:
+        return 0
     dataInClusterMat = numpy.mat(dataInCluster)
     distanceMat = dataInClusterMat - clusterPointMat[clusterIndex]
     errorSum = numpy.sum(numpy.multiply(distanceMat, distanceMat))
@@ -122,5 +132,4 @@ if __name__ == '__main__':
     clusterPointMat, clusterAssement = BinKMeans(dataArray, 4)
     print(clusterPointMat)
     print(clusterAssement)
-    #print(clusterPointMat)
     #print(clusterError(dataArray, clusterPointMat, clusterAssement, 0))
