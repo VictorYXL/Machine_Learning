@@ -59,3 +59,7 @@ if __name__ == '__main__':
     rootNode, headerTable = CreateTree(dataArray, 1)
     rootNode.show()
     print(headerTable)
+    headerTable['r'][1].show()
+    headerTable['r'][1].next.next.show()
+    rootNode.children['z'].children['r'].show()
+    print(headerTable['r'][1] == rootNode.children['z'].children['r'])

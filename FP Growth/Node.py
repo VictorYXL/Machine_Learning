@@ -13,10 +13,8 @@ class Node:
             print("  Parent: None")
         else:
             print("  Parent: %s" % self.parent.name)
-        print("  Children:"),
-        for child in self.children.values():
-            print("%s" % child.name),
-        print("")
+        childList = [child.name for child in self.children.values()]
+        print("  Children:%s" % str(childList))
         for child in self.children.values():
             child.show(ind + 1)
 if __name__ == "__main__":

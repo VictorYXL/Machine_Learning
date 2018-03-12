@@ -22,10 +22,29 @@ class treeNode:
         self.count += numOccur
          
     def disp(self, ind=1):
-        print ind, self.name, ' ', self.count, len(self.children)
+        print("Deep %d: %s, %d" % (ind, self.name, self.count))
+        if self.parent == None:
+            print("  Parent: None")
+        else:
+            print("  Parent: %s" % self.parent.name)
+        childList = [child.name for child in self.children.values()]
+        print("  Children:%s" % str(childList))
         for child in self.children.values():
-            child.disp(ind+1)
+            child.disp(ind + 1)
+def loadSimpDat():
+    simpDat = [['r', 'z', 'h', 'j', 'p'],
+               ['z', 'y', 'x', 'w', 'v', 'u', 't', 's'],
+               ['z'],
+               ['r', 'x', 'n', 'o', 's'],
+               ['y', 'r', 'x', 'z', 'q', 't', 'p'],
+               ['y', 'z', 'x', 'e', 'q', 's', 't', 'm']]
+    return simpDat
  
+def createInitSet(dataSet):
+    retDict = {}
+    for trans in dataSet:
+        retDict[frozenset(trans)] = 1
+    return retDict
 def createTree(dataSet, minSup=1): #create FP-tree from dataset but don't mine
     headerTable = {}
     #go over dataSet twice
@@ -49,8 +68,10 @@ def createTree(dataSet, minSup=1): #create FP-tree from dataset but don't mine
                 localD[item] = headerTable[item][0]
         if len(localD) > 0:
             orderedItems = [v[0] for v in sorted(localD.items(), key=lambda p: p[1], reverse=True)]
+            print orderedItems
             updateTree(orderedItems, retTree, headerTable, count)#populate tree with ordered freq itemset
-	retTree.disp()
+    retTree.disp()
+    print "------------------------"
     return retTree, headerTable #return tree and header table
  
 def updateTree(items, inTree, headerTable, count):
@@ -72,19 +93,6 @@ def updateHeader(nodeToTest, targetNode):   #this version does not use recursion
          
 
  
-def loadSimpDat():
-    simpDat = [['r', 'z', 'h', 'j', 'p'],
-               ['z', 'y', 'x', 'w', 'v', 'u', 't', 's'],
-               ['z'],
-               ['r', 'x', 'n', 'o', 's'],
-               ['y', 'r', 'x', 'z', 'q', 't', 'p'],
-               ['y', 'z', 'x', 'e', 'q', 's', 't', 'm']]
-    return simpDat
- 
-def createInitSet(dataSet):
-    retDict = {}
-    for trans in dataSet:
-        retDict[frozenset(trans)] = 1
-    return retDict
+
 retTree, headerTable = createTree(createInitSet(loadSimpDat()))
 #retTree.disp()
