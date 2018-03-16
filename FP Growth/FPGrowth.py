@@ -48,18 +48,47 @@ def UpdateTree(trans, root, headerTable):
     if len(trans) > 1:
         UpdateTree(trans[1:], root.children[trans[0]], headerTable)
 
+#Find single path for one leaf
+def FindPrefixPath(leafNode):
+    prefixPath = []
+    while leafNode.parent != None:
+        prefixPath.append(leafNode.name)
+        leafNode = leafNode.parent
+    return prefixPath[1:]
+
+#Find all pathes for one leaf
+def FindAllPrefixPath(node):
+    condPath = []
+    while node != None:
+        prefixPath = FindPrefixPath(node)
+        for i in range(node.count):
+            condPath.append(prefixPath) 
+        node = node.next
+    return condPath
+
+#Create mine tree to find all frequent set
+def mineTree(tree, headerTable, minSupport, prefix):
+    leafList = [leaf[1] for leaf in headerTable.values()]
+    tmpFreqSet = []
+    for leaf in leafList:
+        tmpPrefix = prefix[:]
+        tmpPrefix.append(leaf)
+        name = [node.name for node in tmpPrefix]
+        tmpFreqSet.append(name)
+        condPath = FindAllPrefixPath(leaf)
+        condTree, condHeaderList = CreateTree(condPath, minSupport)
+        if condHeaderList != None:
+            tmpFreqSet.extend(mineTree(condTree, condHeaderList, minSupport, tmpPrefix))
+    return tmpFreqSet
 
 if __name__ == '__main__':
-    dataArray = [['r', 'z', 'h', 'j', 'p'],
-               ['z', 'y', 'x', 'w', 'v', 'u', 't', 's'],
-               ['z'],
-               ['r', 'x', 'n', 'o', 's'],
+    dataArray = [
+               ['z', 'y', 'x', 'w', 'v', 'u', 's', 't'],
+               ['s', 'x', 'n', 'o', 'r'],
+               ['y', 'z', 'x', 'e', 'q', 's', 't', 'm'],
                ['y', 'r', 'x', 'z', 'q', 't', 'p'],
-               ['y', 'z', 'x', 'e', 'q', 's', 't', 'm']]
-    rootNode, headerTable = CreateTree(dataArray, 1)
-    rootNode.show()
-    print(headerTable)
-    headerTable['r'][1].show()
-    headerTable['r'][1].next.next.show()
-    rootNode.children['z'].children['r'].show()
-    print(headerTable['r'][1] == rootNode.children['z'].children['r'])
+               ['r', 'z', 'h', 'j', 'p'],
+               ['z']]
+    rootNode, headerTable = CreateTree(dataArray, 3)
+    freqSet = mineTree(rootNode, headerTable, 3, [])
+    print freqSet
