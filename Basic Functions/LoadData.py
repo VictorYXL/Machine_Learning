@@ -4,7 +4,7 @@ def LoadDataAndLabel(fileName):
     labelList = []
     for line in file.readlines():
         data = line.strip().split('\t')
-        dataArray.append(list(map(float,data[:-1])))
+        dataArray.append(list(map(float, data[:-1])))
         labelList.append(float(data[-1]))
     return dataArray, labelList
 
@@ -14,5 +14,5 @@ def LoadData(fileName):
     labelList = []
     for line in file.readlines():
         data = line.strip().split('\t')
-        dataArray.append(list(map(float,data)))
+        dataArray.append(list(map(float, data)))
     return dataArray
